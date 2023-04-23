@@ -77,7 +77,7 @@ void SysTick_Handler(void)
  * @param {unsigned int} ms
  * @return {*}
  */
-void Ymodem_Delay(unsigned int ms)
+void Ymodem_Delay(unsigned uint32_t ms)
 {
     Bsp_Delay_MS(ms);
 }

@@ -3,8 +3,8 @@
  * @Version: 2.0
  * @Author: lkc
  * @Date: 2022-11-28 19:28:49
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-14 18:15:03
+ * @LastEditors: lkc
+ * @LastEditTime: 2023-04-23 21:10:35
  */
 #ifdef __cplusplus
 extern "C"
@@ -44,7 +44,7 @@ int main(void)
     }
     else if (ret == ERROR_NO_ACK)
     {
-        DEBUG("\r\nYMODEM: Ymodem is not in use \r\n");
+        YMODEM_PRINTF("\r\nYMODEM: Ymodem is not in use \r\n");
     }
 
     /* 判断是否存在flash升级标志,包括tftp升级或者ymodem */

@@ -4,7 +4,7 @@
  * @details 细节
  * @mainpage 工程概览
  * @author 作者
- * @email 邮箱
+ * @email 邮箱 
  * @version 版本号
  * @date 年-月-日
  * @license 版权
@@ -32,7 +32,7 @@ unsigned char file_size[FILE_SIZE_LENGTH];
  * @retval 0: ····     收到字节
  *        -1:          超时
  */
-LONG Receive_Byte(UCHAR *c, ULONG timeout)
+int32_t Receive_Byte(uint8_t *c, uint32_t timeout)
 {
 	while (timeout-- > 0)
 	{
@@ -50,7 +50,7 @@ LONG Receive_Byte(UCHAR *c, ULONG timeout)
   * @param  c:  一个字节
   * @retval 0:  默认返回0
   */
-ULONG Send_Byte(UCHAR c)
+uint32_t Send_Byte(uint8_t c)
 {
 	Ymodem_PutChar(c);
 
@@ -69,10 +69,10 @@ ULONG Send_Byte(UCHAR c)
   *        -1:  超时或者包错误
   *         1:  被用户中断
   */
-LONG Receive_Packet(UCHAR* data, LONG* length, ULONG timeout)
+int32_t Receive_Packet(uint8_t* data, int32_t* length, uint32_t timeout)
 {
-	USHORT i, packet_size;
-	UCHAR c;
+	uint16_t i, packet_size;
+	uint8_t c;
 	*length = 0;
 
 	/* 循环判断有没有数据 */
@@ -143,17 +143,106 @@ LONG Receive_Packet(UCHAR* data, LONG* length, ULONG timeout)
 }
 
 /**
- * @description: 显示ymodem信息
- * @detail: 
- * @return {*}
- * @author: lkc
- */
-void Ymodem_ShowFileInfo(void)
+  * @brief  check response using the ymodem protocol
+  * @param  buf: Address of the first byte
+  * @retval The size of the file
+  */
+int32_t Ymodem_CheckResponse(uint8_t c)
 {
-	DEBUG("you maybe receive success!\r\n");
-	DEBUG("file name[%s], file size[%s]\r\n", file_name, file_size);
+	return 0;
+}
 
-	return;
+/**
+  * @brief  Prepare the first block
+  * @param  timeout
+  *     0: end of transmission
+  * @retval None
+  */
+void Ymodem_PrepareIntialPacket(uint8_t* data, const uint8_t* fileName, uint32_t* length)
+{
+	uint16_t i, j;
+	uint8_t file_ptr[10];
+
+	/* Make first three packet */
+	data[0] = SOH;
+	data[1] = 0x00;
+	data[2] = 0xff;
+
+	/* Filename packet has valid data */
+	for (i = 0; (fileName[i] != '\0') && (i < FILE_NAME_LENGTH);i++)
+	{
+		data[i + PACKET_HEADER] = fileName[i];
+	}
+
+	data[i + PACKET_HEADER] = 0x00;
+
+	Int2Str(file_ptr, *length);
+	for (j = 0, i = i + PACKET_HEADER + 1; file_ptr[j] != '\0'; )
+	{
+		data[i++] = file_ptr[j++];
+	}
+
+	for (j = i; j < PACKET_SIZE + PACKET_HEADER; j++)
+	{
+		data[j] = 0;
+	}
+}
+
+/**
+  * @brief  Prepare the data packet
+  * @param  timeout
+  *     0: end of transmission
+  * @retval None
+  */
+void Ymodem_PreparePacket(uint8_t* SourceBuf, uint8_t* data, uint8_t pktNo, uint32_t sizeBlk)
+{
+	uint16_t i, size, packetSize;
+	uint8_t* file_ptr;
+
+	/* Make first three packet */
+	packetSize = sizeBlk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
+	size = sizeBlk < packetSize ? sizeBlk : packetSize;
+	if (packetSize == PACKET_1K_SIZE)
+	{
+		data[0] = STX;
+	}
+	else
+	{
+		data[0] = SOH;
+	}
+	data[1] = pktNo;
+	data[2] = (~pktNo);
+	file_ptr = SourceBuf;
+
+	/* Filename packet has valid data */
+	for (i = PACKET_HEADER; i < size + PACKET_HEADER;i++)
+	{
+		data[i] = *file_ptr++;
+	}
+	if (size <= packetSize)
+	{
+		for (i = size + PACKET_HEADER; i < packetSize + PACKET_HEADER; i++)
+		{
+			data[i] = 0x1A; /* EOF (0x1A) or 0x00 */
+		}
+	}
+}
+
+/**
+  * @brief  Transmit a data packet using the ymodem protocol
+  * @param  data
+  * @param  length
+  * @retval None
+  */
+void Ymodem_SendPacket(uint8_t* data, uint16_t length)
+{
+	uint16_t i;
+	i = 0;
+	while (i < length)
+	{
+		Send_Byte(data[i]);
+		i++;
+	}
 }
 
 /**
@@ -161,12 +250,12 @@ void Ymodem_ShowFileInfo(void)
   * @param  buf: 第一个字节的地址.
   * @retval 文件的大小.
   */
-LONG Ymodem_Receive(UCHAR* buf)
+int32_t Ymodem_Receive(uint8_t* buf)
 {
-	UCHAR packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD], * file_ptr, * buf_ptr;
-	LONG i, packet_length, session_done, file_done, packets_received, errors, session_begin, size = 0;
-	ULONG ramsource;
-	STATIC UCHAR ucSendCNum = 0;
+	uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD], * file_ptr, * buf_ptr;
+	int32_t i, packet_length, session_done, file_done, packets_received, errors, session_begin, size = 0;
+	uint32_t ramsource;
+	static uint8_t ucSendCNum = 0;
 
 	for (session_done = 0, errors = 0, session_begin = 0; ;)
 	{
@@ -261,11 +350,11 @@ LONG Ymodem_Receive(UCHAR* buf)
 
 							/* 拷贝当前的数据 */
 							memcpy(buf_ptr, packet_data + PACKET_HEADER, packet_length);
-							ramsource = (ULONG)buf;
+							ramsource = (uint32_t)buf;
 
 							/* 往flash里边写数据 packet_length/4的原因是一个字占4个字节 */
 							/* flash地址 ramsource写数据 packet_length 写入长度*/
-							if (Ymodem_Flash_Write((uint32_t *)ramsource, (USHORT)packet_length / 4) == 0)
+							if (Ymodem_Flash_Write((uint32_t *)ramsource, (uint16_t)packet_length / 4) == 0)
 							{
 								Send_Byte(ACK);
 							}
@@ -309,7 +398,7 @@ LONG Ymodem_Receive(UCHAR* buf)
 					return ERROR_NO_ACK;
 				}
 				/* 延时 */
-				Ymodem_Delay(500);
+				YMODEM_SLEEP_MS(500);
 
 				ucSendCNum++;
 				Send_Byte(CRC16);
@@ -334,174 +423,7 @@ LONG Ymodem_Receive(UCHAR* buf)
 	Receive_Packet(packet_data, &packet_length, YMODEM_TIMEOUT);
 	Send_Byte(ACK);
 
-	return (LONG)size;
-}
-
-/**
-  * @brief  check response using the ymodem protocol
-  * @param  buf: Address of the first byte
-  * @retval The size of the file
-  */
-LONG Ymodem_CheckResponse(UCHAR c)
-{
-	return 0;
-}
-
-/**
-  * @brief  Prepare the first block
-  * @param  timeout
-  *     0: end of transmission
-  * @retval None
-  */
-void Ymodem_PrepareIntialPacket(UCHAR* data, const UCHAR* fileName, ULONG* length)
-{
-	USHORT i, j;
-	UCHAR file_ptr[10];
-
-	/* Make first three packet */
-	data[0] = SOH;
-	data[1] = 0x00;
-	data[2] = 0xff;
-
-	/* Filename packet has valid data */
-	for (i = 0; (fileName[i] != '\0') && (i < FILE_NAME_LENGTH);i++)
-	{
-		data[i + PACKET_HEADER] = fileName[i];
-	}
-
-	data[i + PACKET_HEADER] = 0x00;
-
-	Int2Str(file_ptr, *length);
-	for (j = 0, i = i + PACKET_HEADER + 1; file_ptr[j] != '\0'; )
-	{
-		data[i++] = file_ptr[j++];
-	}
-
-	for (j = i; j < PACKET_SIZE + PACKET_HEADER; j++)
-	{
-		data[j] = 0;
-	}
-}
-
-/**
-  * @brief  Prepare the data packet
-  * @param  timeout
-  *     0: end of transmission
-  * @retval None
-  */
-void Ymodem_PreparePacket(UCHAR* SourceBuf, UCHAR* data, UCHAR pktNo, ULONG sizeBlk)
-{
-	USHORT i, size, packetSize;
-	UCHAR* file_ptr;
-
-	/* Make first three packet */
-	packetSize = sizeBlk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
-	size = sizeBlk < packetSize ? sizeBlk : packetSize;
-	if (packetSize == PACKET_1K_SIZE)
-	{
-		data[0] = STX;
-	}
-	else
-	{
-		data[0] = SOH;
-	}
-	data[1] = pktNo;
-	data[2] = (~pktNo);
-	file_ptr = SourceBuf;
-
-	/* Filename packet has valid data */
-	for (i = PACKET_HEADER; i < size + PACKET_HEADER;i++)
-	{
-		data[i] = *file_ptr++;
-	}
-	if (size <= packetSize)
-	{
-		for (i = size + PACKET_HEADER; i < packetSize + PACKET_HEADER; i++)
-		{
-			data[i] = 0x1A; /* EOF (0x1A) or 0x00 */
-		}
-	}
-}
-
-/**
-  * @brief  Update CRC16 for input byte
-  * @param  CRC input value
-  * @param  input byte
-  * @retval None
-  */
-USHORT UpdateCRC16(USHORT crcIn, UCHAR byte)
-{
-	ULONG crc = crcIn;
-	ULONG in = byte | 0x100;
-
-	do
-	{
-		crc <<= 1;
-		in <<= 1;
-		if (in & 0x100)
-			++crc;
-		if (crc & 0x10000)
-			crc ^= 0x1021;
-	}
-
-	while (!(in & 0x10000));
-
-	return crc & 0xffffu;
-}
-
-
-/**
-  * @brief  Cal CRC16 for YModem Packet
-  * @param  data
-  * @param  length
-  * @retval None
-  */
-USHORT Cal_CRC16(const UCHAR* data, ULONG size)
-{
-	ULONG crc = 0;
-	const UCHAR* dataEnd = data + size;
-
-	while (data < dataEnd)
-		crc = UpdateCRC16(crc, *data++);
-
-	crc = UpdateCRC16(crc, 0);
-	crc = UpdateCRC16(crc, 0);
-
-	return crc & 0xffffu;
-}
-
-/**
-  * @brief  Cal Check sum for YModem Packet
-  * @param  data
-  * @param  length
-  * @retval None
-  */
-UCHAR CalChecksum(const UCHAR* data, ULONG size)
-{
-	ULONG sum = 0;
-	const UCHAR* dataEnd = data + size;
-
-	while (data < dataEnd)
-		sum += *data++;
-
-	return (sum & 0xffu);
-}
-
-/**
-  * @brief  Transmit a data packet using the ymodem protocol
-  * @param  data
-  * @param  length
-  * @retval None
-  */
-void Ymodem_SendPacket(UCHAR* data, USHORT length)
-{
-	USHORT i;
-	i = 0;
-	while (i < length)
-	{
-		Send_Byte(data[i]);
-		i++;
-	}
+	return (int32_t)size;
 }
 
 /**
@@ -511,16 +433,16 @@ void Ymodem_SendPacket(UCHAR* data, USHORT length)
 	sizeFile	发送文件大小
   * @retval The size of the file
   */
-UCHAR Ymodem_Transmit(UCHAR* buf, const UCHAR* sendFileName, ULONG sizeFile)
+uint8_t Ymodem_Transmit(uint8_t* buf, const uint8_t* sendFileName, uint32_t sizeFile)
 {
 
-	UCHAR packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD];
-	UCHAR filename[FILE_NAME_LENGTH];
-	UCHAR* buf_ptr, tempCheckSum;
-	USHORT tempCRC;
-	USHORT blkNumber;
-	UCHAR receivedC[2], CRC16_F = 0, i;
-	ULONG errors, ackReceived, size = 0, pktSize;
+	uint8_t packet_data[PACKET_1K_SIZE + PACKET_OVERHEAD];
+	uint8_t filename[FILE_NAME_LENGTH];
+	uint8_t* buf_ptr, tempCheckSum;
+	uint16_t tempCRC;
+	uint16_t blkNumber;
+	uint8_t receivedC[2], CRC16_F = 0, i;
+	uint32_t errors, ackReceived, size = 0, pktSize;
 
 	errors = 0;
 	ackReceived = 0;

@@ -4,7 +4,7 @@
  * @Author: lkc
  * @Date: 2022-11-28 19:28:50
  * @LastEditors: lkc
- * @LastEditTime: 2022-12-31 22:13:15
+ * @LastEditTime: 2023-04-23 21:22:49
  */
 /**
   ******************************************************************************
@@ -35,8 +35,11 @@
 extern "C" {
 #endif
 /* Includes ------------------------------------------------------------------*/
-#include "includes.h"
+//#include "includes.h"
 #include "stdio.h"
+#include "stdint.h"
+#include "stdbool.h"
+#include <string.h>
 #include "ymodem_config.h"
 #include "ymodem_common.h"
 #include "ymodem.h"

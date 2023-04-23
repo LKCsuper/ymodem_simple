@@ -3,8 +3,8 @@
  * @Version: 2.0
  * @Author: lkc
  * @Date: 2022-12-24 17:02:40
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-14 18:13:40
+ * @LastEditors: lkc
+ * @LastEditTime: 2023-04-23 21:39:00
  */
 #ifdef __cplusplus
 extern "C"
@@ -21,11 +21,11 @@ extern "C"
 /**
  * @description: 串口初始化
  * @detail: 
- * @param {ULONG} ulBound 波特率
+ * @param {uint32_t} ulBound 波特率
  * @return {*}
  * @author: lkc
  */
-WEAK void Ymodem_Uart_Init(ULONG ulBound)
+WEAK void Ymodem_Uart_Init(uint32_t ulBound)
 {
     YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
     return;
@@ -34,11 +34,11 @@ WEAK void Ymodem_Uart_Init(ULONG ulBound)
 /**
  * @description: 输出到终端一个字符
  * @detail:
- * @param {UCHAR} c 输出字符
+ * @param {uint8_t} c 输出字符
  * @return {*}
  * @author: lkc
  */
-WEAK void Ymodem_PutChar(UCHAR c)
+WEAK void Ymodem_PutChar(uint8_t c)
 {
     YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
     return;
@@ -47,27 +47,14 @@ WEAK void Ymodem_PutChar(UCHAR c)
 /**
  * @description: 获取终端字符
  * @detail:
- * @param {UCHAR} *key
+ * @param {uint8_t} *key
  * @return {*}
  * @author: lkc
  */
-WEAK ULONG Ymodem_GetChar(UCHAR *key)
+WEAK uint32_t Ymodem_GetChar(uint8_t *key)
 {
     YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
     return 0;
-}
-
-/**
- * @description: 延时初始化
- * @detail: 
- * @param {unsigned int} ms 毫秒
- * @return {*}
- * @author: lkc
- */
-WEAK void Ymodem_Delay(unsigned int ms)
-{
-    YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
-    return;
 }
 
 /**
@@ -144,9 +131,9 @@ WEAK uint32_t Ymodem_Flash_Write(uint32_t *Data, uint32_t DataLength)
  */
 void Ymodem_Info(void)
 {
-    DEBUG("\r\n========================================================\r\n");
-    DEBUG("\r\nTime: [ %s ] [ %s ]\r\n", __DATE__, __TIME__);
-    DEBUG("Attention: Do not print during ymodem transfer\r\n");
+    YMODEM_PRINTF("\r\n========================================================\r\n");
+    YMODEM_PRINTF("\r\nTime: [ %s ] [ %s ]\r\n", __DATE__, __TIME__);
+    YMODEM_PRINTF("Attention: Do not print during ymodem transfer\r\n");
 
     return;
 }
@@ -161,7 +148,8 @@ uint32_t JumpAddress;
  */
 void Ymodem_Jump_App(void)
 {
-    DEBUG("YMODEM : Start Jump to App\r\n");
+    #if 0
+    YMODEM_PRINTF("YMODEM : Start Jump to App\r\n");
     JumpAddress = *(__IO uint32_t *)(APPLICATION_ADDRESS + 4);
     /* Jump to user application */
     Jump_To_Application = (pFunction)JumpAddress;
@@ -173,8 +161,25 @@ void Ymodem_Jump_App(void)
     */
     __disable_irq();
     Jump_To_Application();
-
+#endif
     return;
+}
+
+extern unsigned char file_name[FILE_NAME_LENGTH];
+extern unsigned char file_size[FILE_SIZE_LENGTH];
+
+/**
+ * @description: 显示ymodem信息
+ * @detail: 
+ * @return {*}
+ * @author: lkc
+ */
+void Ymodem_ShowFileInfo(void)
+{
+	YMODEM_PRINTF("you maybe receive success!\r\n");
+	YMODEM_PRINTF("file name[%s], file size[%s]\r\n", file_name, file_size);
+
+	return;
 }
 
 #ifdef __cplusplus

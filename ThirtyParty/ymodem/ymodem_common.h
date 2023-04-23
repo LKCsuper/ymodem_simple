@@ -1,7 +1,7 @@
 /*
  * @Description: 
  * @Date: 2022-11-28 19:28:49
- * @LastEditTime: 2023-01-14 17:33:52
+ * @LastEditTime: 2023-04-23 20:18:56
  * @FilePath: \YMODEM\ThirtyParty\ymodem\ymodem_common.h
  */
 /**
@@ -50,6 +50,9 @@ uint32_t GetIntegerInput(int32_t * num);
 uint8_t GetKey(void);
 void Serial_PutString(uint8_t *s);
 void GetInputString(uint8_t * buffP);
+uint16_t UpdateCRC16(uint16_t crcIn, uint8_t byte);
+uint16_t Cal_CRC16(const uint8_t* data, uint32_t size);
+uint8_t CalChecksum(const uint8_t* data, uint32_t size);
 
 #ifdef __cplusplus
 };

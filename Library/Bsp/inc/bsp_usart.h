@@ -3,8 +3,8 @@
  * @Version: 2.0
  * @Author: lkc
  * @Date: 2022-11-28 19:28:50
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-14 18:14:48
+ * @LastEditors: lkc
+ * @LastEditTime: 2023-04-23 21:01:59
  */
 #ifndef _BSP_USART_H
 #define _BSP_USART_H
@@ -31,11 +31,11 @@
 #define EVAL_COM1_RX_SOURCE              GPIO_PinSource10
 #define EVAL_COM1_RX_AF                  GPIO_AF_USART1
 #define EVAL_COM1_IRQn                   USART1_IRQn
-
+    
 /* 可以使用systick 时钟来计算时间 看门狗防止程序跑飞 */
-VOID    Ymodem_Uart_Init(ULONG ulBound);
-VOID    Ymodem_PutChar(UCHAR c);
-ULONG   Ymodem_GetChar(UCHAR* key);
-VOID    Ymodem_HardWareInit(void);
+VOID    Bsp_Uart_Init(ULONG ulBound);
+VOID    Bsp_PutChar(UCHAR c);
+ULONG   Bsp_GetChar(UCHAR* key);
+VOID    Bsp_HardWareInit(void);
 
 #endif

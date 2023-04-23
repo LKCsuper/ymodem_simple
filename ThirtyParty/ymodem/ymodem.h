@@ -1,7 +1,7 @@
-﻿/*
+/*
  * @Description: 
  * @Date: 2022-11-28 19:28:49
- * @LastEditTime: 2023-01-08 23:11:13
+ * @LastEditTime: 2023-04-23 20:31:49
  * @FilePath: \YMODEM\ThirtyParty\ymodem\ymodem.h
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -43,9 +43,6 @@ YMODEM_ERROR_STATUS_E;
 #define PACKET_SIZE             (128)
 #define PACKET_1K_SIZE          (1024)
 
-#define FILE_NAME_LENGTH        (256)
-#define FILE_SIZE_LENGTH        (16)
-
 #define SOH                     (0x01)  /* start of 128-byte data packet */
 #define STX                     (0x02)  /* start of 1024-byte data packet */
 #define EOT                     (0x04)  /* end of transmission */
@@ -65,16 +62,16 @@ YMODEM_ERROR_STATUS_E;
 #define ERROR_NO_ACK                (-5)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-STATIC UCHAR FLAGg = 0;
-STATIC UCHAR datatest[3] = { 0 };
+static uint8_t FLAGg = 0;
+static uint8_t datatest[3] = { 0 };
 
 /* Private functions ---------------------------------------------------------*/
 
-LONG Ymodem_Receive(UCHAR*);
-UCHAR Ymodem_Transmit(UCHAR*, const  UCHAR*, ULONG);
-LONG Receive_Byte(UCHAR* c, ULONG timeout);
-ULONG Send_Byte(UCHAR c);
-LONG Receive_Packet(UCHAR* data, LONG* length, ULONG timeout);
+int32_t Ymodem_Receive(uint8_t*);
+uint8_t Ymodem_Transmit(uint8_t*, const  uint8_t*, uint32_t);
+int32_t Receive_Byte(uint8_t* c, uint32_t timeout);
+uint32_t Send_Byte(uint8_t c);
+int32_t Receive_Packet(uint8_t* data, int32_t* length, uint32_t timeout);
 void Ymodem_ShowFileInfo(void);
 
 #ifdef __cplusplus

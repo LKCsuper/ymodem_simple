@@ -35,7 +35,7 @@ int fputc(int ch, FILE *p)
  * @par  time 2022/8/5
  * @par  name Ymodem_UartInit
  */
-VOID Ymodem_Uart_Init(ULONG ulBound)
+VOID Bsp_Uart_Init(ULONG ulBound)
 {
 	RCC_AHB1PeriphClockCmd(EVAL_COM1_TX_GPIO_CLK, ENABLE);
 	RCC_AHB1PeriphClockCmd(EVAL_COM1_RX_GPIO_CLK, ENABLE);
@@ -81,7 +81,7 @@ VOID Ymodem_Uart_Init(ULONG ulBound)
   * @param  c: 输出字符
   * @retval None
   */
-VOID Ymodem_PutChar(UCHAR c)
+VOID Bsp_PutChar(UCHAR c)
 {
 	USART_SendData(EVAL_COM1, c);
 	while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TXE) == RESET)
@@ -98,7 +98,7 @@ VOID Ymodem_PutChar(UCHAR c)
   * @retval 1: Correct
   *         0: Error
   */
-ULONG Ymodem_GetChar(UCHAR* key)
+ULONG Bsp_GetChar(UCHAR* key)
 {
 	/* 当存在数据的时候 */
 	if (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_RXNE) != RESET)
