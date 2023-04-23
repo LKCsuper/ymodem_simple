@@ -28,7 +28,7 @@ int main(void)
     int ret = 0;
 
     /* 初始化ymodem外设 */
-    Ymodem_Uart_Init(115200);
+    Bsp_Uart_Init(115200);
     /* 看门狗初始化，防止跑飞 */
     Bsp_Misc_Iwdg(IWDG_Prescaler_256, 0x0FFF);
 

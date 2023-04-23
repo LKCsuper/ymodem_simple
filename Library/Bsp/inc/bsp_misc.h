@@ -16,7 +16,6 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-void Ymodem_Delay(unsigned uint32_t ms);
 void Bsp_Misc_Iwdg(UCHAR prv, USHORT rlv);
 
 #endif

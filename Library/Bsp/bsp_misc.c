@@ -3,8 +3,8 @@
  * @Version: 2.0
  * @Author: lkc
  * @Date: 2022-11-28 19:28:49
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-14 18:16:22
+ * @LastEditors: lkc
+ * @LastEditTime: 2023-04-23 22:12:43
  */
 #ifdef __cplusplus
 extern "C"
@@ -69,17 +69,6 @@ void SysTick_Handler(void)
 {
     if (time_delay)
         time_delay--;
-}
-
-/**
- * @description: ymodem 延时
- * @detail description: 
- * @param {unsigned int} ms
- * @return {*}
- */
-void Ymodem_Delay(unsigned uint32_t ms)
-{
-    Bsp_Delay_MS(ms);
 }
 
 /**

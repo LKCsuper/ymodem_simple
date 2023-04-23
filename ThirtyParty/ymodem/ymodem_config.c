@@ -4,7 +4,7 @@
  * @Author: lkc
  * @Date: 2022-12-24 17:02:40
  * @LastEditors: lkc
- * @LastEditTime: 2023-04-23 21:39:00
+ * @LastEditTime: 2023-04-23 22:20:59
  */
 #ifdef __cplusplus
 extern "C"
@@ -123,21 +123,6 @@ WEAK uint32_t Ymodem_Flash_Write(uint32_t *Data, uint32_t DataLength)
     return 0;
 }
 
-/**
- * @description: 消息显示
- * @detail:
- * @return {*}
- * @author: lkc
- */
-void Ymodem_Info(void)
-{
-    YMODEM_PRINTF("\r\n========================================================\r\n");
-    YMODEM_PRINTF("\r\nTime: [ %s ] [ %s ]\r\n", __DATE__, __TIME__);
-    YMODEM_PRINTF("Attention: Do not print during ymodem transfer\r\n");
-
-    return;
-}
-
 pFunction Jump_To_Application;
 uint32_t JumpAddress;
 /**
@@ -167,7 +152,6 @@ void Ymodem_Jump_App(void)
 
 extern unsigned char file_name[FILE_NAME_LENGTH];
 extern unsigned char file_size[FILE_SIZE_LENGTH];
-
 /**
  * @description: 显示ymodem信息
  * @detail: 
@@ -180,6 +164,21 @@ void Ymodem_ShowFileInfo(void)
 	YMODEM_PRINTF("file name[%s], file size[%s]\r\n", file_name, file_size);
 
 	return;
+}
+
+/**
+ * @description: 消息显示
+ * @detail:
+ * @return {*}
+ * @author: lkc
+ */
+void Ymodem_Info(void)
+{
+    YMODEM_PRINTF("\r\n========================================================\r\n");
+    YMODEM_PRINTF("\r\nTime: [ %s ] [ %s ]\r\n", __DATE__, __TIME__);
+    YMODEM_PRINTF("Attention: Do not print during ymodem transfer\r\n");
+
+    return;
 }
 
 #ifdef __cplusplus

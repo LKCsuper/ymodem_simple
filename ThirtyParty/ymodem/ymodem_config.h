@@ -73,9 +73,15 @@ typedef void (*pFunction)(void);
 /* Private functions ---------------------------------------------------------*/
 void Ymodem_Info(void);
 void Ymodem_Jump_App(void);
+WEAK void Ymodem_Uart_Init(uint32_t ulBound)
 WEAK uint32_t Ymodem_GetChar(uint8_t *key);
 WEAK void Ymodem_PutChar(uint8_t c);
+WEAK void Ymodem_Flash_Set_Flag(bool isSet);
+WEAK uint32_t Ymodem_Flash_Get_Flag(void);
+WEAK void Ymodem_Flash_Init(void);
 WEAK void Ymodem_Flash_Erase_App(void);
+WEAK uint32_t Ymodem_Flash_Write(uint32_t *Data, uint32_t DataLength);
+
 
 #ifdef __cplusplus
 };
