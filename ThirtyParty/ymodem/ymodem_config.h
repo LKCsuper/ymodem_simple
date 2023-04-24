@@ -4,7 +4,7 @@
  * @Author: lkc
  * @Date: 2022-11-28 19:28:49
  * @LastEditors: lkc
- * @LastEditTime: 2023-04-23 21:58:09
+ * @LastEditTime: 2023-04-24 10:18:20
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __YMODEM_CONFIG_H_
@@ -24,9 +24,11 @@ extern "C" {
 // #define     APPLICATION_SIZE            APP_BAK_SIZE
 // #define     APPLICATION_ADDRESS         APP_BAK_START_ADDR
 // #define     APPLICATION_END_ADDRESS     APP_BAK_END_ADDR
-// #define     YMODEM_SLEEP_MS(ms)           Bsp_Delay_MS(ms)
+// #define     YMODEM_SLEEP_MS(ms)         Bsp_Delay_MS(ms)
 
+/* 跳转函数位置 */
 typedef void (*pFunction)(void);
+
 /* 延时时间,用于不停的发c */
 #define     YMODEM_DELAY_MS                 (500)
 /* ymodem 发送c的次数 */
@@ -71,18 +73,18 @@ typedef void (*pFunction)(void);
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-void Ymodem_Info(void);
-void Ymodem_Jump_App(void);
-WEAK void Ymodem_Uart_Init(uint32_t ulBound)
+WEAK void Ymodem_Uart_Init(uint32_t ulBound);
 WEAK uint32_t Ymodem_GetChar(uint8_t *key);
 WEAK void Ymodem_PutChar(uint8_t c);
 WEAK void Ymodem_Flash_Set_Flag(bool isSet);
 WEAK uint32_t Ymodem_Flash_Get_Flag(void);
 WEAK void Ymodem_Flash_Init(void);
-WEAK void Ymodem_Flash_Erase_App(void);
 WEAK uint32_t Ymodem_Flash_Write(uint32_t *Data, uint32_t DataLength);
+WEAK void Ymodem_Flash_Erase_App(void);
+WEAK uint32_t Ymodem_Flash_Write_App(uint32_t *Data, uint32_t DataLength);
 
-
+void Ymodem_Info(void);
+void Ymodem_Jump_App(void);
 #ifdef __cplusplus
 };
 #endif

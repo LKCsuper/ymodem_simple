@@ -188,31 +188,8 @@ void YMODEM_FLASH_Erase_App(void)
  * @param {uint32_t} DataLength     数据长度
  * @return {*}
  */
-uint32_t YMODEM_FLASH_Write(uint32_t *Data, uint32_t DataLength)
+uint32_t Ymodem_Flash_Write(uint32_t FlashAddress ,uint32_t Data)
 {
-    uint32_t i = 0;
-    STATIC __IO ULONG FlashAddress = APP_BAK_SIZE;
-
-    for (i = 0; (i < DataLength) && (FlashAddress <= (APP_BAK_END_ADDR - 4)); i++)
-    {
-        /* 电压范围2.7v到3.6v,操作才能完成写一个word */
-        if (FLASH_ProgramWord(FlashAddress, *(uint32_t *)(Data + i)) == FLASH_COMPLETE)
-        {
-            /* 写入后读出数据 判断数据是不是相等 */
-            if (*(uint32_t *)FlashAddress != *(uint32_t *)(Data + i))
-            {
-                /* Flash content doesn't match SRAM content */
-                return (2);
-            }
-            /* Increment FLASH destination address */
-            FlashAddress += 4;
-        }
-        else
-        {
-            /* Error occurred while writing data in Flash memory */
-            return (1);
-        }
-    }
     
     return 0;
 }

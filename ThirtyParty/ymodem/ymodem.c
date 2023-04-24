@@ -24,7 +24,6 @@ unsigned char file_name[FILE_NAME_LENGTH];
 unsigned char file_size[FILE_SIZE_LENGTH];
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
 /**
  * @brief              接受一个字节
  * @param  c: ·        接受的字节
@@ -354,7 +353,7 @@ int32_t Ymodem_Receive(uint8_t* buf)
 
 							/* 往flash里边写数据 packet_length/4的原因是一个字占4个字节 */
 							/* flash地址 ramsource写数据 packet_length 写入长度*/
-							if (Ymodem_Flash_Write((uint32_t *)ramsource, (uint16_t)packet_length / 4) == 0)
+							if (Ymodem_Flash_Write_App((uint32_t *)ramsource, (uint16_t)packet_length / 4) == 0)
 							{
 								Send_Byte(ACK);
 							}

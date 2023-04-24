@@ -7,17 +7,18 @@
 
   <Targets>
     <Target>
-      <TargetName>Target 1</TargetName>
+      <TargetName>Ymodem_Simple</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5050106::V5.05 update 1 (build 106)::.\ARMCC</pCCUsed>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARMCC</pArmCC>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407ZGTx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.16.0</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
+          <PackID>Keil.STM32F4xx_DFP.2.17.0</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x10000000,0x00010000) IROM(0x08000000,0x00100000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -610,9 +611,9 @@
               <FilePath>..\ThirtyParty\ymodem\ymodem_common.c</FilePath>
             </File>
             <File>
-              <FileName>ymodem_config.c</FileName>
+              <FileName>ymodem_port.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\ThirtyParty\ymodem\ymodem_config.c</FilePath>
+              <FilePath>..\ThirtyParty\ymodem\ymodem_port.c</FilePath>
             </File>
           </Files>
         </Group>

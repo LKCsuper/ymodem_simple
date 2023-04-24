@@ -1,7 +1,7 @@
 /*
  * @Description: 
  * @Date: 2022-11-28 19:28:49
- * @LastEditTime: 2023-04-23 20:31:49
+ * @LastEditTime: 2023-04-24 09:21:46
  * @FilePath: \YMODEM\ThirtyParty\ymodem\ymodem.h
  */
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -17,15 +17,13 @@ typedef enum tagYmodemFlag
 {
 	YMODEM_RESET = 0,
 	YMODEM_SET = !YMODEM_RESET
-}
-YMODEM_FLAG_E;
+}YMODEM_FLAG_E;
 
 typedef enum tagYmodemState
 {
 	YMODEM_DISABLE = 0,
 	YMODEM_ENABLE = !YMODEM_DISABLE
-}
-YMODEM_STATE_E;
+}YMODEM_STATE_E;
 typedef enum
 {
 	YMODEM_ERROR = 0,
@@ -58,15 +56,11 @@ YMODEM_ERROR_STATUS_E;
 
 #define MAX_ERRORS              (5)
 
-/* 规定次数ymodem没有回应 */
-#define ERROR_NO_ACK                (-5)
+/* 规定次数ymodem没有回应,返回没有回应错误 */
+#define ERROR_NO_ACK            (-5)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static uint8_t FLAGg = 0;
-static uint8_t datatest[3] = { 0 };
-
 /* Private functions ---------------------------------------------------------*/
-
 int32_t Ymodem_Receive(uint8_t*);
 uint8_t Ymodem_Transmit(uint8_t*, const  uint8_t*, uint32_t);
 int32_t Receive_Byte(uint8_t* c, uint32_t timeout);

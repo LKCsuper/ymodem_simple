@@ -4,7 +4,7 @@
  * @Author: lkc
  * @Date: 2022-12-24 17:02:40
  * @LastEditors: lkc
- * @LastEditTime: 2023-04-23 22:20:59
+ * @LastEditTime: 2023-04-24 10:16:53
  */
 #ifdef __cplusplus
 extern "C"
@@ -58,6 +58,37 @@ WEAK uint32_t Ymodem_GetChar(uint8_t *key)
 }
 
 /**
+ * @brief  flash初始化
+ * @param  None
+ * @retval None
+ */
+WEAK void Ymodem_Flash_Init(void)
+{
+    YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
+    return;
+}
+
+/**
+ * @brief  将数据写入flash中(data are 32-bit aligned).
+ * @note   After writing data buffer, the flash content is checked.
+ * @param  FlashAddress: start address for writing data buffer
+ * @param  Data: pointer on data buffer
+ * @return YMODEM_SUCCESS 写成功
+ *         YMODEM_ERROR 写失败
+ */
+WEAK uint32_t Ymodem_Flash_Write(uint32_t FlashAddress ,uint32_t Data)
+{
+    YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
+
+    if (FLASH_COMPLETE == FLASH_ProgramWord(FlashAddress, Data))
+    {
+        return YMODEM_SUCCESS;
+    }
+
+    return YMODEM_SUCCESS;
+}
+
+/**
  * @description: 升级标志
  * @detail: 主要是ymodem升级到备份区之后然后置位,关于这个升级标志存放位置，可以放在升级app_bak 最后4个字节
  * 这样既不影响程序运行，当擦除升级标志的时候正好一起将app_bak擦掉
@@ -68,6 +99,9 @@ WEAK uint32_t Ymodem_GetChar(uint8_t *key)
 WEAK void Ymodem_Flash_Set_Flag(bool isSet)
 {
     YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
+
+    /* 写一个4字节的数据 */
+
     return;
 }
 
@@ -81,18 +115,10 @@ WEAK void Ymodem_Flash_Set_Flag(bool isSet)
 WEAK uint32_t Ymodem_Flash_Get_Flag(void)
 {
     YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
-    return 0;
-}
 
-/**
- * @brief  flash初始化
- * @param  None
- * @retval None
- */
-WEAK void Ymodem_Flash_Init(void)
-{
-    YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
-    return;
+    /* 读取一个四字节的数据 */
+
+    return 0;
 }
 
 /**
@@ -108,18 +134,41 @@ WEAK void Ymodem_Flash_Erase_App(void)
 }
 
 /**
- * @brief  将数据写入flash中(data are 32-bit aligned).
- * @note   After writing data buffer, the flash content is checked.
- * @param  FlashAddress: start address for writing data buffer
- * @param  Data: pointer on data buffer
- * @param  DataLength: length of data buffer (unit is 32-bit word)
- * @retval 0: Data successfully written to Flash memory
- *         1: Error occurred while writing data in Flash memory
- *         2: Written Data in flash memory is different from expected one
+ * @brief  写app
+ * @param  Data: 数据
+ * @param  DataLength：写数据长度
+ * @retval write DataLen
  */
-WEAK uint32_t Ymodem_Flash_Write(uint32_t *Data, uint32_t DataLength)
+WEAK uint32_t Ymodem_Flash_Write_App(uint32_t *Data, uint32_t DataLength)
 {
     YMODEM_WARNING("You have to make sure you don't need this function [ %s ] \r\n", __func__);
+
+    uint32_t i = 0;
+    STATIC __IO ULONG FlashAddress = APPLICATION_ADDRESS;
+
+    for (i = 0; (i < DataLength) && (FlashAddress <= (APPLICATION_END_ADDRESSS - 4)); i++)
+    {
+        /* 电压范围2.7v到3.6v,操作才能完成写一个word */
+        //if (FLASH_ProgramWord(FlashAddress, *(uint32_t *)(Data + i)) == FLASH_COMPLETE)
+        /* 如果写4字节数据成功 */
+        if (YMODEM_SUCCESS == Ymodem_Flash_Write(FlashAddress, *(uint32_t *)(Data + i)))
+        {
+            /* 写入后读出数据 判断数据是不是相等 */
+            if (*(uint32_t *)FlashAddress != *(uint32_t *)(Data + i))
+            {
+                /* Flash content doesn't match SRAM content */
+                return (2);
+            }
+            /* Increment FLASH destination address */
+            FlashAddress += 4;
+        }
+        else
+        {
+            /* Error occurred while writing data in Flash memory */
+            return (1);
+        }
+    }
+    
     return 0;
 }
 

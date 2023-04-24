@@ -71,6 +71,6 @@ uint32_t Ymodem_Flash_Get_Flag(void);
 void Ymodem_Flash_Set_Flag(bool isSet);
 void Ymodem_Flash_Init(void);
 void Ymodem_Flash_Erase_App(void);
-uint32_t Ymodem_Flash_Write(uint32_t *Data, uint32_t DataLength);
+uint32_t Ymodem_Flash_Write(uint32_t FlashAddress ,uint32_t Data)；
 
 #endif  /* __FLASH_IF_H */
